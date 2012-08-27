@@ -1662,6 +1662,12 @@ public class SubstanceRootPaneUI extends BasicRootPaneUI {
         public void componentResized(ComponentEvent e) {
             if (e.getComponent() instanceof Window) {
                 Window w = (Window) e.getComponent();
+                if ((w instanceof Frame && !((Frame)w).isUndecorated())
+                    || (w instanceof Dialog && !((Dialog)w).isUndecorated()))
+                {
+                    return; // don't touch the shape of decorated windows
+                }
+                    
                 if (w instanceof RootPaneContainer) {
                     JRootPane jrp = ((RootPaneContainer)w).getRootPane();
                     if ((jrp.getWindowDecorationStyle() == JRootPane.NONE)
