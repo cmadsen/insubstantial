@@ -29,26 +29,29 @@
  */
 package org.pushingpixels.substance.internal.utils;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import javax.swing.*;
-import javax.swing.JInternalFrame.JDesktopIcon;
-import javax.swing.plaf.MenuBarUI;
-import javax.swing.plaf.UIResource;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
-
 import org.pushingpixels.lafwidget.LafWidgetUtilities;
-import org.pushingpixels.substance.api.*;
+import org.pushingpixels.substance.api.DecorationAreaType;
+import org.pushingpixels.substance.api.SubstanceColorScheme;
+import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.substance.internal.colorscheme.ShiftColorScheme;
 import org.pushingpixels.substance.internal.painter.BackgroundPaintingUtils;
 import org.pushingpixels.substance.internal.ui.SubstanceButtonUI;
 import org.pushingpixels.substance.internal.ui.SubstanceMenuBarUI;
 import org.pushingpixels.substance.internal.utils.icon.SubstanceIconFactory;
 import org.pushingpixels.substance.internal.utils.icon.TransitionAwareIcon;
+
+import javax.swing.*;
+import javax.swing.JInternalFrame.JDesktopIcon;
+import javax.swing.plaf.MenuBarUI;
+import javax.swing.plaf.UIResource;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 /**
  * UI for internal frame title pane in <b>Substance </b> look and feel.
@@ -145,6 +148,9 @@ public class SubstanceInternalFrameTitlePane extends
 					updateOptionPaneState();
 					frame.repaint();
 				}
+                if ("closed".equals(evt.getPropertyName())) {
+                    windowMenu.setPopupMenuVisible(false);
+                }
 			}
 		};
 		this.frame.addPropertyChangeListener(this.substancePropertyListener);
@@ -419,18 +425,6 @@ public class SubstanceInternalFrameTitlePane extends
 					theTitle, width, height, xOffset, yOffset);
 		}
 
-		Icon icon = this.frame.getFrameIcon();
-		if (icon != null) {
-			if (leftToRight) {
-				int iconY = ((height / 2) - (icon.getIconHeight() / 2));
-				icon.paintIcon(this.frame, graphics, 5, iconY);
-			} else {
-				int iconY = ((height / 2) - (icon.getIconHeight() / 2));
-				icon.paintIcon(this.frame, graphics, width - 5
-						- icon.getIconWidth(), iconY);
-			}
-		}
-
 		graphics.dispose();
 	}
 
@@ -556,7 +550,27 @@ public class SubstanceInternalFrameTitlePane extends
 		}
 	}
 
-	/*
+    /**
+     * Returns the <code>JMenuBar</code> displaying the appropriate system menu
+     * items.
+     *
+     * @return <code>JMenuBar</code> displaying the appropriate system menu
+     *         items.
+     */
+    @Override
+    protected JMenuBar createSystemMenuBar() {
+        this.menuBar = new SubstanceMenuBar();
+        this.menuBar.setFocusable(false);
+        this.menuBar.setBorderPainted(true);
+        this.menuBar.add(this.createSystemMenu());
+        this.menuBar.setOpaque(false);
+        // support for RTL
+        this.menuBar.applyComponentOrientation(this.getComponentOrientation());
+
+        return this.menuBar;
+    }
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see javax.swing.plaf.basic.BasicInternalFrameTitlePane#createActions()
@@ -567,7 +581,54 @@ public class SubstanceInternalFrameTitlePane extends
 		this.iconifyAction = new SubstanceIconifyAction();
 	}
 
-	/*
+    /**
+     * Returns the <code>JMenu</code> displaying the appropriate menu items for
+     * manipulating the Frame.
+     *
+     * @return <code>JMenu</code> displaying the appropriate menu items for
+     *         manipulating the Frame.
+     */
+    @Override
+    protected JMenu createSystemMenu() {
+        JMenu menu = super.createSystemMenu();
+
+        menu.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
+                    closeAction.actionPerformed(new ActionEvent(e.getSource(),
+                            ActionEvent.ACTION_PERFORMED, null,
+                            EventQueue.getMostRecentEventTime(), e.getModifiers()));
+                }
+            }
+        });
+        return menu;
+    }
+
+    /**
+     * Adds the necessary <code>JMenuItem</code>s to the specified menu.
+     *
+     * @param menu
+     *            Menu.
+     */
+    @Override
+    protected void addSystemMenuItems(JMenu menu) {
+        menu.add(this.restoreAction);
+
+        menu.add(this.iconifyAction);
+
+        if (Toolkit.getDefaultToolkit().isFrameStateSupported(
+                Frame.MAXIMIZED_BOTH)) {
+            menu.add(this.maximizeAction);
+        }
+
+        menu.addSeparator();
+
+        menu.add(this.closeAction);
+    }
+
+
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see javax.swing.plaf.basic.BasicInternalFrameTitlePane#createButtons()
@@ -670,7 +731,39 @@ public class SubstanceInternalFrameTitlePane extends
 		}
 	}
 
-	/**
+    /**
+     * Class responsible for drawing the system menu. Looks up the image to draw
+     * from the Frame associated with the <code>JRootPane</code>.
+     */
+    public class SubstanceMenuBar extends JMenuBar {
+        @Override
+        public void paint(Graphics g) {
+            if (frame.getFrameIcon() != null) {
+                frame.getFrameIcon().paintIcon(this, g, 0, 0);
+            } else {
+                Icon icon = UIManager.getIcon("InternalFrame.icon");
+                if (icon != null) {
+                    icon.paintIcon(this, g, 0, 0);
+                }
+            }
+        }
+
+        @Override
+        public Dimension getMinimumSize() {
+            return this.getPreferredSize();
+        }
+
+        @Override
+        public Dimension getPreferredSize() {
+            Dimension size = super.getPreferredSize();
+
+            int iSize = SubstanceSizeUtils.getTitlePaneIconSize();
+            return new Dimension(Math.max(iSize, size.width), Math.max(
+                    size.height, iSize));
+        }
+    }
+
+    /**
 	 * Layout manager for this title pane.
 	 * 
 	 * @author Kirill Grouchnikov
@@ -754,14 +847,15 @@ public class SubstanceInternalFrameTitlePane extends
 
 			y = (getHeight() - buttonHeight) / 2;
 
-			// Icon icon = frame.getFrameIcon();
-			// int iconHeight = 0;
-			// if (icon != null) {
-			// iconHeight = icon.getIconHeight();
-			// }
-			// int xMenuBar = (leftToRight) ? 2 : w - 16 - 2;
-			// menuBar.setBounds(xMenuBar, (getHeight() - iconHeight) / 2, 16,
-			// 16);
+            Icon icon = frame.getFrameIcon();
+			int iconHeight = 0;
+			int iconWidth = 0;
+			if (icon != null) {
+    			iconHeight = icon.getIconHeight();
+    			iconWidth = icon.getIconWidth();
+			}
+			int xMenuBar = (leftToRight) ? 5 : w - 16 - 5;
+			menuBar.setBounds(xMenuBar, (getHeight() - iconHeight) / 2, iconWidth, iconHeight);
 
 			if (frame.isClosable()) {
 				// if (isPalette) {
