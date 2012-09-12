@@ -769,6 +769,34 @@ public abstract class SubstanceLookAndFeel extends BasicLookAndFeel {
 	 */
 	public final static String TABBED_PANE_CONTENT_BORDER_KIND = "substancelaf.tabbedPaneContentBorderKind";
 
+
+	/**
+	 * Client property name for specifying wheter tabs shown on the left or right 
+     * will be rotated vertically. This property can be specified either on a 
+     * single {@link JTabbedPane} or on * {@link UIManager}. The value should a 
+     * Boolean. By default, the rotation is enabled.
+	 * 
+	 * <p>
+	 * Example of setting that all tabbed panes should not rotate the tabs:
+	 * </p>
+	 * <code>
+	 * UIManager.put(SubstanceLookAndFeel.TABBED_PANE_ROTATE_SIDE_TABS, <br>
+	 * &nbsp;&nbsp;Boolean.FALSE);
+	 * </code>
+	 * 
+	 * <p>
+	 * Example of specifying that the specific tabbed pane tabbed panes should not rotate the tabs:
+	 * </p>
+	 * <code>
+	 * JTabbedPane jtpMain = new JTabbedPane();<br>
+	 * jtpMain.putClientProperty(SubstanceLookAndFeel.TABBED_PANE_ROTATE_SIDE_TABS, <br>
+	 * &nbsp;&nbsp;Boolean.FALSE);
+	 * </code>
+	 * 
+	 * @since version 7.2
+	 */
+	public final static String TABBED_PANE_ROTATE_SIDE_TABS = "substancelaf.rotate";
+
 	/**
 	 * Client property name for specifying the leading vertical line on a table.
      * Normally the presence of the leading vertical line on a table is driven
