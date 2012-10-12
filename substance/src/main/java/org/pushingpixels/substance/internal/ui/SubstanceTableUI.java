@@ -1965,7 +1965,8 @@ public class SubstanceTableUI extends BasicTableUI implements
 			// or hidden, we will get a mouseExited() event, but shouldn't
 			// be changing the rollover indication if the mouse is still
 			// over the table
-			Point mouseLoc = MouseInfo.getPointerInfo().getLocation();
+            PointerInfo pi = MouseInfo.getPointerInfo(); 
+			Point mouseLoc = pi == null ?  null : pi.getLocation();
             Window windowAncestor = SwingUtilities.getWindowAncestor(table);
             if ((mouseLoc != null) && (windowAncestor != null)) {
                 SwingUtilities.convertPointFromScreen(mouseLoc, windowAncestor);
