@@ -23,7 +23,7 @@ subprojects {
   }
 
   signing {
-    required = { gradle.taskGraph.hasTask(uploadArchives) && !version.endsWith("SNAPSHOT") }
+    required = { gradle.taskGraph.hasTask(uploadPublished) && !version.endsWith("SNAPSHOT") }
     sign configurations.archives
   }
 
@@ -114,12 +114,13 @@ task wrapper(type: Wrapper) {
 
 def checkPasswords() {
   try {
-    check = [sonatypeUsername, sonatypePassword]
+    check = [ext.sonatypeUsername, ext.sonatypePassword]
+    println "Using sonatype user $sonatypeUsername"
   } catch (MissingPropertyException e) {
     Console console = System.console()
     console.printf "\n\nIn order to upload to Sonatype we need your username and password.\nEnter a blank username or password to skip upload\n\n"
-    sonatypeUsername = console.readLine("Sonatype Username: ")
-    sonatypePassword = new String(console.readPassword("Sonatype Password: "))
+    ext.sonatypeUsername = console.readLine("Sonatype Username: ")
+    ext.sonatypePassword = new String(console.readPassword("Sonatype Password: "))
     if (!sonatypePassword || !sonatypeUsername) {
       console.printf("\n\nSonatype upload aborted")
       subprojects {
