@@ -30,4 +30,5 @@ credentails
 6. Perform smoke testing so you are sure you are happy with the bits.
 7. Upload jars to the github site
 8. Go to oss.sonatype.org and close and release the repo
-9. After the jars appear in the central repo, post release notes
+9. Push changes to github
+10. After the jars appear in the central repo, post release notes
