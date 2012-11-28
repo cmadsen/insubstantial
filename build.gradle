@@ -1,5 +1,5 @@
 group = 'com.github.insubstantial'
-version = '7.2.1-SNAPSHOT'
+version = '7.2.1'
 
 subprojects {
   apply plugin: 'java'
@@ -7,7 +7,7 @@ subprojects {
   apply plugin: 'signing'
 
   group = 'com.github.insubstantial'
-  version = '7.2.1-SNAPSHOT'
+  version = '7.2.1'
   ext.versionKey = "7.2.1-magnificent"
 
   sourceCompatibility = 1.6
