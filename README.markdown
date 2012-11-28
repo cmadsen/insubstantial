@@ -5,7 +5,7 @@ BuildHive status:
 
 To perform a full release
 
-*Prerequisites*
+##Prerequisites
 You need to have your GPG keys set up and your sonatype password handy.  To set up your GPG key set this in
 your `~/.gradle/gradle.properties (you will need to replace ABCDEF12 and password with your key ID and password).
 
@@ -20,7 +20,8 @@ credentails
     sonatypeUsername=username
     sonatypePassword=password
 
-*The Build*
+##The Build
+
 1. Update the version in the root build.gradle file to remove the SNAPSHOT.  There should be two locations.
 2. Commit the change to git
 3. perform the build:
