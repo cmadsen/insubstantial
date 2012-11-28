@@ -25,10 +25,10 @@ credentails
 2. Commit the change to git
 3. perform the build:
    gradle clean githubDist uploadPublished
-4. Bump the version numbers in the root build.gradle, being sure to add SNAPSHOT
-5. Commit the change to git
-6. Perform smoke testing so you are sure you are happy with the bits.
-7. Upload jars to the github site
-8. Go to oss.sonatype.org and close and release the repo
+4. Perform smoke testing so you are sure you are happy with the bits.
+5. Upload jars to the github site
+6. Go to oss.sonatype.org and close and release the repo
+7. Bump the version numbers in the root build.gradle, being sure to add SNAPSHOT
+8. Commit the change to git
 9. Push changes to github
 10. After the jars appear in the central repo, post release notes
