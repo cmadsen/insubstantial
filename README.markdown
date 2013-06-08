@@ -1,3 +1,10 @@
+To Whom It May Concern:
+
+Insubstantial is currently not releasing any more builds and is [actively looking for a new maintainer](http://speling.shemnon.com/blog/2013/06/08/insubstantial-needs-a-new-maintainer/).  It could be you!
+
+
+---
+
 This is a fork of several of Kirill Grouchnikov's Java Swing libraries.
 
 BuildHive status:
