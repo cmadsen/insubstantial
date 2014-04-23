@@ -1780,9 +1780,9 @@ public class SubstanceTableUI extends BasicTableUI implements
 		@Override
 		public int compareTo(TableCellId o) {
 			if (row == o.row) {
-				return Integer.compare(column, o.column);
+				return (column < o.column) ? -1 : ((column == o.column) ? 0 : 1);
 			} else {
-				return Integer.compare(row, o.row);
+				return (row < o.row) ? -1 : ((row == o.row) ? 0 : 1);
 			}
 		}
 
