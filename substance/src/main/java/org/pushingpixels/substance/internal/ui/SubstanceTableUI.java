@@ -1779,11 +1779,11 @@ public class SubstanceTableUI extends BasicTableUI implements
 		 */
 		@Override
 		public int compareTo(TableCellId o) {
-            if (row == o.row) {
-                return Integer.compare(column, o.column);
-            } else {
-                return Integer.compare(row, o.row);
-            }
+			if (row == o.row) {
+				return Integer.compare(column, o.column);
+			} else {
+				return Integer.compare(row, o.row);
+			}
 		}
 
 		/*
@@ -1801,12 +1801,12 @@ public class SubstanceTableUI extends BasicTableUI implements
 
 		/*
 		 * (non-Javadoc)
-		 * 
+		 *
 		 * @see java.lang.Object#hashCode()
 		 */
 		@Override
 		public int hashCode() {
-            return (this.row ^ (this.row << 16))
+			return (this.row ^ (this.row << 16))
 					& (this.column ^ (this.column << 16));
 		}
 
