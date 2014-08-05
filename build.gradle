@@ -1,6 +1,14 @@
 group = 'com.github.insubstantial'
 version = '7.3-SNAPSHOT'
 
+if (JavaVersion.current().isJava8Compatible()) {
+  allprojects {
+    tasks.withType(Javadoc) {
+      options.addStringOption('Xdoclint:none', '-quiet')
+    }
+  }
+}
+
 subprojects {
   apply plugin: 'java'
   apply plugin: 'maven'
@@ -25,9 +33,9 @@ subprojects {
   }
 
   repositories {
-    mavenRepo url: 'https://oss.sonatype.org/content/groups/staging'
+    maven { url 'https://oss.sonatype.org/content/groups/staging' }
     mavenCentral()
-    mavenRepo url: new File(System.getProperty('user.home'), '.m2/repository').toURI().toString()
+    maven { url new File(System.getProperty('user.home'), '.m2/repository').toURI().toString() }
   }
 
   task sourceJar(type: Jar) {
