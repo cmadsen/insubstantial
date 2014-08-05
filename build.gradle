@@ -1,5 +1,5 @@
 group = 'com.github.insubstantial'
-version = '7.3-SNAPSHOT'
+version = '7.3'
 
 if (JavaVersion.current().isJava8Compatible()) {
   allprojects {
@@ -15,7 +15,7 @@ subprojects {
   apply plugin: 'signing'
 
   group = 'com.github.insubstantial'
-  version = '7.3-SNAPSHOT'
+  version = '7.3'
   ext.versionKey = "7.3-destroyer"
 
   sourceCompatibility = 1.6
