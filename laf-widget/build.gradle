@@ -25,6 +25,16 @@ install {
   configurePOM(repositories.mavenInstaller.pom)
 }
 
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      configurePOM(pom)
+    }
+  }
+}
+
+
 private def configurePOM(def pom) {
   configureBasePom(pom)
   pom.project {

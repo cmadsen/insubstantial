@@ -35,14 +35,23 @@ import java.awt.event.FocusListener;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.ButtonModel;
+import javax.swing.CellRendererPane;
+import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.EventListenerList;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
 import org.pushingpixels.lafwidget.animation.AnimationConfigurationManager;
 import org.pushingpixels.lafwidget.animation.AnimationFacet;
-import org.pushingpixels.substance.api.*;
+import org.pushingpixels.substance.api.ComponentState;
+import org.pushingpixels.substance.api.ComponentStateFacet;
+import org.pushingpixels.substance.api.UiThreadingViolationException;
 import org.pushingpixels.substance.api.renderers.SubstanceRenderer;
 import org.pushingpixels.substance.internal.utils.SubstanceCoreUtilities;
 import org.pushingpixels.trident.Timeline;
@@ -399,8 +408,8 @@ public class StateTransitionTracker {
 			// }
 		} else {
 			this.transitionPosition = 0.0f;
-			this.transitionTimeline.addPropertyToInterpolate(
-					"transitionPosition", 0.0f, 1.0f);
+			this.transitionTimeline
+					.addPropertyToInterpolate("transitionPosition", 0.0f, 1.0f);
 			// if ((this.component instanceof JMenuItem)
 			// && "Check enabled unselected"
 			// .equals(((JMenuItem) this.component).getText())) {

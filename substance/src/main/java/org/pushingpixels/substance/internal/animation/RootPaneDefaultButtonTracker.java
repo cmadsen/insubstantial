@@ -34,7 +34,9 @@ import java.awt.Container;
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import org.pushingpixels.substance.api.SubstanceLookAndFeel;
 import org.pushingpixels.trident.Timeline;
@@ -76,7 +78,7 @@ public class RootPaneDefaultButtonTracker extends
 		// Create weak reference.
 		this.buttonRef = new WeakReference<JButton>(jbutton);
 		// Create coalesced timer.
-		this.timeline = new Timeline(this);
+		this.timeline = new Timeline(jbutton);
 		this.timeline.addCallback(this);
 		// Store event handler and initial cycle count.
 		RootPaneDefaultButtonTracker.trackers.put(jbutton, this);

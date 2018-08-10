@@ -29,12 +29,20 @@
  */
 package org.pushingpixels.trident;
 
-import java.util.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+import javax.swing.SwingUtilities;
 
 import org.pushingpixels.trident.TimelineEngine.FullObjectID;
 import org.pushingpixels.trident.TimelineEngine.TimelineOperationKind;
 import org.pushingpixels.trident.TimelinePropertyBuilder.AbstractFieldInfo;
-import org.pushingpixels.trident.callback.*;
+import org.pushingpixels.trident.callback.RunOnUIThread;
+import org.pushingpixels.trident.callback.TimelineCallback;
+import org.pushingpixels.trident.callback.TimelineCallbackAdapter;
 import org.pushingpixels.trident.ease.Linear;
 import org.pushingpixels.trident.ease.TimelineEase;
 import org.pushingpixels.trident.interpolator.KeyFrames;
@@ -105,8 +113,8 @@ public class Timeline implements TimelineScenario.TimelineScenarioActor {
 	}
 
 	public enum TimelineState {
-		IDLE(false), READY(false), PLAYING_FORWARD(true), PLAYING_REVERSE(true), SUSPENDED(
-				false), CANCELLED(false), DONE(false);
+		IDLE(false), READY(false), PLAYING_FORWARD(true), PLAYING_REVERSE(
+				true), SUSPENDED(false), CANCELLED(false), DONE(false);
 
 		private boolean isActive;
 
@@ -204,15 +212,36 @@ public class Timeline implements TimelineScenario.TimelineScenarioActor {
 					Timeline.this.uiToolkitHandler.runOnUIThread(mainObject,
 							new Runnable() {
 								@Override
-                                public void run() {
+								public void run() {
 									callback.onTimelineStateChanged(oldState,
 											newState, durationFraction,
 											timelinePosition);
 								}
 							});
 				} else {
-					callback.onTimelineStateChanged(oldState, newState,
-							durationFraction, timelinePosition);
+					if (shouldRunOnUIThread) {
+						RuntimeException e = new RuntimeException("");
+						e.fillInStackTrace();
+						StringWriter sw = new StringWriter();
+						PrintWriter pw = new PrintWriter(sw);
+						e.printStackTrace(pw);
+						// System.err.println("Oops\n" + sw.toString());
+						// System.err.println(
+						// "ERROR: onTimelineStateChanged
+						// shouldRunOnUIThread=true but uiToolkitHandler is
+						// null!!! "
+						// + name);
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								callback.onTimelineStateChanged(oldState,
+										newState, durationFraction,
+										timelinePosition);
+							}
+						});
+					} else {
+						callback.onTimelineStateChanged(oldState, newState,
+								durationFraction, timelinePosition);
+					}
 				}
 			}
 		}
@@ -239,8 +268,9 @@ public class Timeline implements TimelineScenario.TimelineScenarioActor {
 					Timeline.this.uiToolkitHandler.runOnUIThread(mainObject,
 							new Runnable() {
 								@Override
-                                public void run() {
-									if (Timeline.this.getState() == TimelineState.CANCELLED)
+								public void run() {
+									if (Timeline.this
+											.getState() == TimelineState.CANCELLED)
 										return;
 									// System.err.println("Timeline @"
 									// + Timeline.this.hashCode());
@@ -251,8 +281,29 @@ public class Timeline implements TimelineScenario.TimelineScenarioActor {
 				} else {
 					// System.err.println("Timeline @" +
 					// Timeline.this.hashCode());
-					callback
-							.onTimelinePulse(durationFraction, timelinePosition);
+					if (shouldRunOnUIThread) {
+						RuntimeException e = new RuntimeException("");
+						e.fillInStackTrace();
+						StringWriter sw = new StringWriter();
+						PrintWriter pw = new PrintWriter(sw);
+						e.printStackTrace(pw);
+						// System.err.println("Oops\n" + sw.toString());
+						// System.err.println(
+						// "ERROR: onTimelinePulse shouldRunOnUIThread=true but
+						// uiToolkitHandler is null!!! "
+						// + name);
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								callback.onTimelinePulse(durationFraction,
+										timelinePosition);
+							}
+						});
+					} else {
+						callback.onTimelinePulse(durationFraction,
+								timelinePosition);
+					}
+					// callback.onTimelinePulse(durationFraction,
+					// timelinePosition);
 				}
 			}
 		}
@@ -273,10 +324,13 @@ public class Timeline implements TimelineScenario.TimelineScenarioActor {
 			}
 		}
 
+
+
 		// if the main timeline object is handled by a UI toolkit handler,
 		// the setters registered with the different addProperty
 		// APIs need to run with the matching threading policy
-		TimelineCallback setterCallback = (this.uiToolkitHandler != null) ? new UISetter()
+		TimelineCallback setterCallback = (this.uiToolkitHandler != null)
+				? new UISetter()
 				: new Setter();
 		this.callback = new Chain(setterCallback);
 
@@ -357,17 +411,18 @@ public class Timeline implements TimelineScenario.TimelineScenarioActor {
 
 	public final <T> void addPropertyToInterpolate(String propName,
 			KeyFrames<T> keyFrames) {
-		this.addPropertyToInterpolate(Timeline.<T> property(propName)
-				.goingThrough(keyFrames));
+		this.addPropertyToInterpolate(
+				Timeline.<T> property(propName).goingThrough(keyFrames));
 	}
 
-	public final <T> void addPropertyToInterpolate(String propName, T from, T to) {
-		this.addPropertyToInterpolate(Timeline.<T> property(propName)
-				.from(from).to(to));
+	public final <T> void addPropertyToInterpolate(String propName, T from,
+			T to) {
+		this.addPropertyToInterpolate(
+				Timeline.<T> property(propName).from(from).to(to));
 	}
 
 	@Override
-    public void play() {
+	public void play() {
 		this.playSkipping(0);
 	}
 
