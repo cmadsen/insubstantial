@@ -29,8 +29,6 @@
  */
 package org.pushingpixels.trident;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -220,11 +218,11 @@ public class Timeline implements TimelineScenario.TimelineScenarioActor {
 							});
 				} else {
 					if (shouldRunOnUIThread) {
-						RuntimeException e = new RuntimeException("");
-						e.fillInStackTrace();
-						StringWriter sw = new StringWriter();
-						PrintWriter pw = new PrintWriter(sw);
-						e.printStackTrace(pw);
+						// RuntimeException e = new RuntimeException("");
+						// e.fillInStackTrace();
+						// StringWriter sw = new StringWriter();
+						// PrintWriter pw = new PrintWriter(sw);
+						// e.printStackTrace(pw);
 						// System.err.println("Oops\n" + sw.toString());
 						// System.err.println(
 						// "ERROR: onTimelineStateChanged
@@ -282,11 +280,11 @@ public class Timeline implements TimelineScenario.TimelineScenarioActor {
 					// System.err.println("Timeline @" +
 					// Timeline.this.hashCode());
 					if (shouldRunOnUIThread) {
-						RuntimeException e = new RuntimeException("");
-						e.fillInStackTrace();
-						StringWriter sw = new StringWriter();
-						PrintWriter pw = new PrintWriter(sw);
-						e.printStackTrace(pw);
+						// RuntimeException e = new RuntimeException("");
+						// e.fillInStackTrace();
+						// StringWriter sw = new StringWriter();
+						// PrintWriter pw = new PrintWriter(sw);
+						// e.printStackTrace(pw);
 						// System.err.println("Oops\n" + sw.toString());
 						// System.err.println(
 						// "ERROR: onTimelinePulse shouldRunOnUIThread=true but
